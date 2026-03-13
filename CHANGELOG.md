@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0] - 2026-03-12
+
+### Added
+- `Combine` method for merging multiple results (fail-fast)
+- `CombineAll` method for collecting all errors from multiple results
+- `Tap` and `TapErr` methods for side-effects without breaking chains
+- LINQ query syntax support via `Select` and `SelectMany` extensions
+
 ## 0.1.1 (2026-03-10)
 
 - Add README to NuGet package so it displays on nuget.org

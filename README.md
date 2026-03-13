@@ -44,6 +44,30 @@ var all = Result.All(new[] {
     Result<int, string>.Ok(1),
     Result<int, string>.Ok(2),
 });  // Ok([1, 2])
+
+// Combine — fail-fast, returns first error
+var combined = Result.Combine(new[] {
+    Result<int, string>.Ok(1),
+    Result<int, string>.Ok(2),
+});  // Ok([1, 2])
+
+// CombineAll — collects ALL errors
+var validated = Result.CombineAll(new[] {
+    Result<int, string>.Err("too short"),
+    Result<int, string>.Err("too old"),
+});  // Err(["too short", "too old"])
+
+// Tap / TapErr — side-effects without breaking chains
+var logged = ok
+    .Tap(v => Console.WriteLine($"Got value: {v}"))
+    .Map(x => x * 2);
+
+err.TapErr(e => Console.WriteLine($"Error: {e}"));
+
+// LINQ query syntax
+var sum = from x in Result<int, string>.Ok(10)
+          from y in Result<int, string>.Ok(20)
+          select x + y;  // Ok(30)
 ```
 
 ## API
@@ -63,6 +87,8 @@ var all = Result.All(new[] {
 | `MapErr<F>(Func<E, F>)` | Transform error value |
 | `FlatMap<U>(Func<T, Result<U, E>>)` | Chain result-returning functions |
 | `Match<U>(onOk, onErr)` | Pattern match on result |
+| `Tap(Action<T>)` | Execute side-effect if Ok, return same result |
+| `TapErr(Action<E>)` | Execute side-effect if Err, return same result |
 
 ### Static helpers
 
@@ -71,6 +97,15 @@ var all = Result.All(new[] {
 | `Result.Try<T>(Func<T>)` | Wrap a throwing function |
 | `Result.TryAsync<T>(Func<Task<T>>)` | Wrap an async throwing function |
 | `Result.All<T, E>(...)` | Collect results into a single result |
+| `Result.Combine<T, E>(...)` | Combine results, fail on first error |
+| `Result.CombineAll<T, E>(...)` | Combine results, collect all errors |
+
+### LINQ extensions
+
+| Method | Description |
+|--------|-------------|
+| `Select` | Enables `select` in LINQ queries (maps Ok value) |
+| `SelectMany` | Enables `from ... from ...` in LINQ queries (chains results) |
 
 ## License
 

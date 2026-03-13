@@ -59,6 +59,20 @@ public readonly struct Result<T, E>
     public U Match<U>(Func<T, U> onOk, Func<E, U> onErr) =>
         _isOk ? onOk(_value!) : onErr(_error!);
 
+    /// <summary>Executes an action if Ok, then returns the same result. Useful for side-effects.</summary>
+    public Result<T, E> Tap(Action<T> action)
+    {
+        if (_isOk) action(_value!);
+        return this;
+    }
+
+    /// <summary>Executes an action if Err, then returns the same result. Useful for side-effects.</summary>
+    public Result<T, E> TapErr(Action<E> action)
+    {
+        if (!_isOk) action(_error!);
+        return this;
+    }
+
     public override string ToString() =>
         _isOk ? $"Ok({_value})" : $"Err({_error})";
 }
@@ -94,4 +108,46 @@ public static class Result
         }
         return Result<List<T>, E>.Ok(values);
     }
+
+    /// <summary>Combines multiple results. Returns Ok with all values if all succeed, or the first error.</summary>
+    public static Result<IReadOnlyList<T>, E> Combine<T, E>(IEnumerable<Result<T, E>> results)
+    {
+        var values = new List<T>();
+        foreach (var r in results)
+        {
+            if (r.IsErr) return Result<IReadOnlyList<T>, E>.Err(r.UnwrapErr());
+            values.Add(r.Unwrap());
+        }
+        return Result<IReadOnlyList<T>, E>.Ok(values);
+    }
+
+    /// <summary>Combines multiple results, collecting ALL errors instead of failing fast.</summary>
+    public static Result<IReadOnlyList<T>, IReadOnlyList<E>> CombineAll<T, E>(IEnumerable<Result<T, E>> results)
+    {
+        var values = new List<T>();
+        var errors = new List<E>();
+        foreach (var r in results)
+        {
+            if (r.IsErr)
+                errors.Add(r.UnwrapErr());
+            else
+                values.Add(r.Unwrap());
+        }
+        return errors.Count > 0
+            ? Result<IReadOnlyList<T>, IReadOnlyList<E>>.Err(errors)
+            : Result<IReadOnlyList<T>, IReadOnlyList<E>>.Ok(values);
+    }
+}
+
+/// <summary>LINQ extension methods for Result.</summary>
+public static class ResultLinqExtensions
+{
+    public static Result<U, E> Select<T, E, U>(this Result<T, E> result, Func<T, U> selector) =>
+        result.Map(selector);
+
+    public static Result<V, E> SelectMany<T, E, U, V>(
+        this Result<T, E> result,
+        Func<T, Result<U, E>> selector,
+        Func<T, U, V> resultSelector) =>
+        result.FlatMap(t => selector(t).Map(u => resultSelector(t, u)));
 }
