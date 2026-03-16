@@ -111,6 +111,12 @@ var sum = from x in Result<int, string>.Ok(10)
 | `Select` | Enables `select` in LINQ queries (maps Ok value) |
 | `SelectMany` | Enables `from ... from ...` in LINQ queries (chains results) |
 
+## Development
+
+```bash
+dotnet build src/Philiprehberger.Result.csproj --configuration Release
+```
+
 ## License
 
 MIT

@@ -5,11 +5,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>Philiprehberger.Result</PackageId>
-    <Version>0.2.2</Version>
+    <Version>0.2.3</Version>
     <Authors>Philip Rehberger</Authors>
     <Description>Result type for .NET with pattern matching and LINQ support</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/philiprehberger/dotnet-result</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageTags>result;either;error-handling;type-safe;monad</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
