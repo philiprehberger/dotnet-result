@@ -1,5 +1,9 @@
 # Philiprehberger.Result
 
+[![CI](https://github.com/philiprehberger/dotnet-result/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/dotnet-result/actions/workflows/ci.yml)
+[![NuGet](https://img.shields.io/nuget/v/Philiprehberger.Result.svg)](https://www.nuget.org/packages/Philiprehberger.Result)
+[![License](https://img.shields.io/github/license/philiprehberger/dotnet-result)](LICENSE)
+
 A lightweight Result type for .NET — model success and failure without exceptions.
 
 ## Install
