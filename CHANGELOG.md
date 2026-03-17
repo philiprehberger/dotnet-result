@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- Add `OrElse` for error recovery
+- Add `Filter` for predicate-based narrowing
+- Add `Flatten` for nested Result unwrapping
+- Add `IsOkAnd` and `IsErrAnd` predicate checks
+- Add `Expect` for unwrap with custom error message
+
 ## 0.2.3
 
 - Add Development section to README

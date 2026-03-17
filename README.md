@@ -93,6 +93,11 @@ var sum = from x in Result<int, string>.Ok(10)
 | `Match<U>(onOk, onErr)` | Pattern match on result |
 | `Tap(Action<T>)` | Execute side-effect if Ok, return same result |
 | `TapErr(Action<E>)` | Execute side-effect if Err, return same result |
+| `OrElse(Func<E, Result<T, E>>)` | Attempt recovery from an error |
+| `Filter(predicate, errorFactory)` | Narrow Ok values by predicate |
+| `IsOkAnd(Func<T, bool>)` | True if Ok and predicate holds |
+| `IsErrAnd(Func<E, bool>)` | True if Err and predicate holds |
+| `Expect(string message)` | Get value or throw with custom message |
 
 ### Static helpers
 
@@ -103,6 +108,7 @@ var sum = from x in Result<int, string>.Ok(10)
 | `Result.All<T, E>(...)` | Collect results into a single result |
 | `Result.Combine<T, E>(...)` | Combine results, fail on first error |
 | `Result.CombineAll<T, E>(...)` | Combine results, collect all errors |
+| `Result.Flatten<T, E>(...)` | Unwrap a nested `Result<Result<T,E>,E>` |
 
 ### LINQ extensions
 
@@ -110,6 +116,38 @@ var sum = from x in Result<int, string>.Ok(10)
 |--------|-------------|
 | `Select` | Enables `select` in LINQ queries (maps Ok value) |
 | `SelectMany` | Enables `from ... from ...` in LINQ queries (chains results) |
+
+### Error Recovery
+
+```csharp
+// OrElse — recover from an error by trying an alternative
+Result<int, string> Fetch(string key) =>
+    Cache.Get(key).OrElse(err => Database.Get(key));
+
+// Expect — unwrap with a meaningful message on failure
+int port = config.OrElse(_ => Result<int, string>.Ok(8080))
+    .Expect("Failed to resolve port");
+```
+
+### Filtering
+
+```csharp
+// Filter — narrow Ok values with a predicate
+var positive = Result<int, string>.Ok(42)
+    .Filter(x => x > 0, x => $"{x} is not positive");  // Ok(42)
+
+var rejected = Result<int, string>.Ok(-1)
+    .Filter(x => x > 0, x => $"{x} is not positive");  // Err("-1 is not positive")
+
+// Flatten — unwrap nested results
+Result<Result<int, string>, string> nested =
+    Result<Result<int, string>, string>.Ok(Result<int, string>.Ok(42));
+Result<int, string> flat = Result.Flatten(nested);  // Ok(42)
+
+// IsOkAnd / IsErrAnd — quick predicate checks
+bool isLarge = Result<int, string>.Ok(100).IsOkAnd(x => x > 50);   // true
+bool isNotFound = Result<int, string>.Err("404").IsErrAnd(e => e.Contains("404")); // true
+```
 
 ## Development
 

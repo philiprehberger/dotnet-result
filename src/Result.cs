@@ -73,6 +73,32 @@ public readonly struct Result<T, E>
         return this;
     }
 
+    /// <summary>If Err, calls <paramref name="fn"/> with the error to attempt recovery. If Ok, returns this.</summary>
+    public Result<T, E> OrElse(Func<E, Result<T, E>> fn)
+    {
+        return IsOk ? this : fn(_error!);
+    }
+
+    /// <summary>If Ok, tests the value against <paramref name="predicate"/>. Returns Err (via <paramref name="errorFactory"/>) when the predicate fails.</summary>
+    public Result<T, E> Filter(Func<T, bool> predicate, Func<T, E> errorFactory)
+    {
+        if (!IsOk) return this;
+        return predicate(_value!) ? this : Err(errorFactory(_value!));
+    }
+
+    /// <summary>Returns <see langword="true"/> if Ok and the value satisfies <paramref name="predicate"/>.</summary>
+    public bool IsOkAnd(Func<T, bool> predicate) => IsOk && predicate(_value!);
+
+    /// <summary>Returns <see langword="true"/> if Err and the error satisfies <paramref name="predicate"/>.</summary>
+    public bool IsErrAnd(Func<E, bool> predicate) => !IsOk && predicate(_error!);
+
+    /// <summary>Returns the success value or throws <see cref="InvalidOperationException"/> with a custom message.</summary>
+    public T Expect(string message)
+    {
+        if (IsOk) return _value!;
+        throw new InvalidOperationException($"{message}: {_error}");
+    }
+
     public override string ToString() =>
         _isOk ? $"Ok({_value})" : $"Err({_error})";
 }
@@ -119,6 +145,12 @@ public static class Result
             values.Add(r.Unwrap());
         }
         return Result<IReadOnlyList<T>, E>.Ok(values);
+    }
+
+    /// <summary>Flattens a nested <c>Result&lt;Result&lt;T, E&gt;, E&gt;</c> into a single <c>Result&lt;T, E&gt;</c>.</summary>
+    public static Result<T, E> Flatten<T, E>(Result<Result<T, E>, E> nested)
+    {
+        return nested.IsOk ? nested.Unwrap() : Result<T, E>.Err(nested.UnwrapErr());
     }
 
     /// <summary>Combines multiple results, collecting ALL errors instead of failing fast.</summary>
