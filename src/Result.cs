@@ -23,10 +23,20 @@ public readonly struct Result<T, E>
         _isOk = false;
     }
 
+    /// <summary>Creates a success result containing <paramref name="value"/>.</summary>
+    /// <param name="value">The success value.</param>
+    /// <returns>An Ok result.</returns>
     public static Result<T, E> Ok(T value) => new(value);
+
+    /// <summary>Creates a failure result containing <paramref name="error"/>.</summary>
+    /// <param name="error">The error value.</param>
+    /// <returns>An Err result.</returns>
     public static Result<T, E> Err(E error) => new(error, false);
 
+    /// <summary>Gets a value indicating whether this result is Ok.</summary>
     public bool IsOk => _isOk;
+
+    /// <summary>Gets a value indicating whether this result is Err.</summary>
     public bool IsErr => !_isOk;
 
     /// <summary>Returns the success value or throws if Err.</summary>
@@ -99,6 +109,8 @@ public readonly struct Result<T, E>
         throw new InvalidOperationException($"{message}: {_error}");
     }
 
+    /// <summary>Returns a string representation of the result.</summary>
+    /// <returns>A string in the form "Ok(value)" or "Err(error)".</returns>
     public override string ToString() =>
         _isOk ? $"Ok({_value})" : $"Err({_error})";
 }
@@ -106,7 +118,18 @@ public readonly struct Result<T, E>
 /// <summary>Helper methods for creating Result values.</summary>
 public static class Result
 {
+    /// <summary>Creates a success result containing <paramref name="value"/>.</summary>
+    /// <typeparam name="T">The success type.</typeparam>
+    /// <typeparam name="E">The error type.</typeparam>
+    /// <param name="value">The success value.</param>
+    /// <returns>An Ok result.</returns>
     public static Result<T, E> Ok<T, E>(T value) => Result<T, E>.Ok(value);
+
+    /// <summary>Creates a failure result containing <paramref name="error"/>.</summary>
+    /// <typeparam name="T">The success type.</typeparam>
+    /// <typeparam name="E">The error type.</typeparam>
+    /// <param name="error">The error value.</param>
+    /// <returns>An Err result.</returns>
     public static Result<T, E> Err<T, E>(E error) => Result<T, E>.Err(error);
 
     /// <summary>Wraps a function that may throw into a Result.</summary>
@@ -174,9 +197,25 @@ public static class Result
 /// <summary>LINQ extension methods for Result.</summary>
 public static class ResultLinqExtensions
 {
+    /// <summary>Projects the success value using <paramref name="selector"/>.</summary>
+    /// <typeparam name="T">The source success type.</typeparam>
+    /// <typeparam name="E">The error type.</typeparam>
+    /// <typeparam name="U">The projected success type.</typeparam>
+    /// <param name="result">The result to project.</param>
+    /// <param name="selector">The projection function.</param>
+    /// <returns>A result with the projected value if Ok; otherwise the original error.</returns>
     public static Result<U, E> Select<T, E, U>(this Result<T, E> result, Func<T, U> selector) =>
         result.Map(selector);
 
+    /// <summary>Projects the success value into a new result and applies a result selector.</summary>
+    /// <typeparam name="T">The source success type.</typeparam>
+    /// <typeparam name="E">The error type.</typeparam>
+    /// <typeparam name="U">The intermediate success type.</typeparam>
+    /// <typeparam name="V">The final success type.</typeparam>
+    /// <param name="result">The result to project.</param>
+    /// <param name="selector">A function that returns an intermediate result.</param>
+    /// <param name="resultSelector">A function that combines the source and intermediate values.</param>
+    /// <returns>A result with the combined value if both are Ok; otherwise the first error.</returns>
     public static Result<V, E> SelectMany<T, E, U, V>(
         this Result<T, E> result,
         Func<T, Result<U, E>> selector,
