@@ -6,7 +6,7 @@
 
 A lightweight Result type for .NET — model success and failure without exceptions.
 
-## Install
+## Installation
 
 ```bash
 dotnet add package Philiprehberger.Result
