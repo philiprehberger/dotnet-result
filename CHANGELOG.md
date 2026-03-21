@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1 (2026-03-20)
+
+- Align README and csproj descriptions
+- Add Usage subsections for better navigation
+
 ## 0.3.0
 
 - Add `OrElse` for error recovery

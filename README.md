@@ -4,7 +4,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Philiprehberger.Result.svg)](https://www.nuget.org/packages/Philiprehberger.Result)
 [![License](https://img.shields.io/github/license/philiprehberger/dotnet-result)](LICENSE)
 
-A lightweight Result type for .NET — model success and failure without exceptions.
+Lightweight Result type for .NET — model success and failure without exceptions, with pattern matching and LINQ support.
 
 ## Installation
 
@@ -14,61 +14,68 @@ dotnet add package Philiprehberger.Result
 
 ## Usage
 
+### Create Results
+
 ```csharp
 using Philiprehberger.Result;
 
-// Create results
 var ok = Result<int, string>.Ok(42);
 var err = Result<int, string>.Err("not found");
 
-// Unwrap
 int value = ok.Unwrap();           // 42
 int safe = err.UnwrapOr(0);        // 0
+```
 
-// Transform
+### Transform and Match
+
+```csharp
 var doubled = ok.Map(x => x * 2);  // Ok(84)
 
-// Chain
 var result = ok.FlatMap(x =>
     x > 0 ? Result<string, string>.Ok($"positive: {x}")
            : Result<string, string>.Err("must be positive"));
 
-// Pattern match
 string msg = ok.Match(
     onOk: v => $"Got {v}",
     onErr: e => $"Error: {e}"
 );
+```
 
-// Try — wrap throwing code
+### Try and Collect
+
+```csharp
 var parsed = Result.Try(() => int.Parse("123"));  // Ok(123)
 var failed = Result.Try(() => int.Parse("abc"));  // Err(FormatException)
 
-// Collect
 var all = Result.All(new[] {
     Result<int, string>.Ok(1),
     Result<int, string>.Ok(2),
 });  // Ok([1, 2])
 
-// Combine — fail-fast, returns first error
 var combined = Result.Combine(new[] {
     Result<int, string>.Ok(1),
     Result<int, string>.Ok(2),
 });  // Ok([1, 2])
 
-// CombineAll — collects ALL errors
 var validated = Result.CombineAll(new[] {
     Result<int, string>.Err("too short"),
     Result<int, string>.Err("too old"),
 });  // Err(["too short", "too old"])
+```
 
-// Tap / TapErr — side-effects without breaking chains
+### Side Effects
+
+```csharp
 var logged = ok
     .Tap(v => Console.WriteLine($"Got value: {v}"))
     .Map(x => x * 2);
 
 err.TapErr(e => Console.WriteLine($"Error: {e}"));
+```
 
-// LINQ query syntax
+### LINQ Query Syntax
+
+```csharp
 var sum = from x in Result<int, string>.Ok(10)
           from y in Result<int, string>.Ok(20)
           select x + y;  // Ok(30)
