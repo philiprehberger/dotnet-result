@@ -4,7 +4,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Philiprehberger.Result.svg)](https://www.nuget.org/packages/Philiprehberger.Result)
 [![License](https://img.shields.io/github/license/philiprehberger/dotnet-result)](LICENSE)
 
-Lightweight Result type for .NET — model success and failure without exceptions, with pattern matching and LINQ support.
+Lightweight Result type for .NET — model success and failure without exceptions using pattern matching.
 
 ## Installation
 

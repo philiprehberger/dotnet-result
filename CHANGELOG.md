@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3 (2026-03-23)
+
+- Shorten package description to meet 120-character limit
+
 ## 0.3.2 (2026-03-22)
 
 - Add dates to changelog entries
