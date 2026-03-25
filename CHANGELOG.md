@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.4 (2026-03-24)
+
+- Add unit tests
+- Add test step to CI workflow
+
 ## 0.3.3 (2026-03-23)
 
 - Shorten package description to meet 120-character limit
