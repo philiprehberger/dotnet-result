@@ -3,6 +3,7 @@
 [![CI](https://github.com/philiprehberger/dotnet-result/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/dotnet-result/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/Philiprehberger.Result.svg)](https://www.nuget.org/packages/Philiprehberger.Result)
 [![License](https://img.shields.io/github/license/philiprehberger/dotnet-result)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 Lightweight Result type for .NET — model success and failure without exceptions using pattern matching.
 
@@ -164,4 +165,4 @@ dotnet build src/Philiprehberger.Result.csproj --configuration Release
 
 ## License
 
-MIT
+[MIT](LICENSE)
