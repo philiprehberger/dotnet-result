@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 (2026-03-27)
+
+- Add async operations (MapAsync, FlatMapAsync, MatchAsync)
+- Add Tap and TapError for side effects in pipelines
+- Add Combine overloads for 3, 4, and 5 results
+- Add Ensure method for conditional success-to-failure conversion
+
 ## 0.3.5 (2026-03-26)
 
 - Add Sponsor badge to README

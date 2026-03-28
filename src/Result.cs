@@ -83,6 +83,50 @@ public readonly struct Result<T, E>
         return this;
     }
 
+    /// <summary>Executes an action if Err, then returns the same result. Alias for <see cref="TapErr"/>.</summary>
+    public Result<T, E> TapError(Action<E> action) => TapErr(action);
+
+    /// <summary>If Ok, tests the value against <paramref name="predicate"/>. Returns Err with the specified error when the predicate fails.</summary>
+    /// <param name="predicate">A function to test the success value.</param>
+    /// <param name="error">The error to return when the predicate is false.</param>
+    /// <returns>The original result if Err or if the predicate passes; otherwise Err with <paramref name="error"/>.</returns>
+    public Result<T, E> Ensure(Func<T, bool> predicate, E error)
+    {
+        if (!_isOk) return this;
+        return predicate(_value!) ? this : Err(error);
+    }
+
+    /// <summary>Asynchronously transforms the success value.</summary>
+    /// <typeparam name="TNew">The new success type.</typeparam>
+    /// <param name="mapper">An async function to transform the success value.</param>
+    /// <returns>A task containing the mapped result.</returns>
+    public async Task<Result<TNew, E>> MapAsync<TNew>(Func<T, Task<TNew>> mapper)
+    {
+        if (!_isOk) return Result<TNew, E>.Err(_error!);
+        var newValue = await mapper(_value!);
+        return Result<TNew, E>.Ok(newValue);
+    }
+
+    /// <summary>Asynchronously chains a function that returns a Result.</summary>
+    /// <typeparam name="TNew">The new success type.</typeparam>
+    /// <param name="mapper">An async function that returns a new Result.</param>
+    /// <returns>A task containing the chained result.</returns>
+    public async Task<Result<TNew, E>> FlatMapAsync<TNew>(Func<T, Task<Result<TNew, E>>> mapper)
+    {
+        if (!_isOk) return Result<TNew, E>.Err(_error!);
+        return await mapper(_value!);
+    }
+
+    /// <summary>Asynchronously pattern match on Ok or Err.</summary>
+    /// <typeparam name="TOut">The output type.</typeparam>
+    /// <param name="onSuccess">An async function called when Ok.</param>
+    /// <param name="onFailure">An async function called when Err.</param>
+    /// <returns>A task containing the matched output.</returns>
+    public async Task<TOut> MatchAsync<TOut>(Func<T, Task<TOut>> onSuccess, Func<E, Task<TOut>> onFailure)
+    {
+        return _isOk ? await onSuccess(_value!) : await onFailure(_error!);
+    }
+
     /// <summary>If Err, calls <paramref name="fn"/> with the error to attempt recovery. If Ok, returns this.</summary>
     public Result<T, E> OrElse(Func<E, Result<T, E>> fn)
     {
@@ -174,6 +218,39 @@ public static class Result
     public static Result<T, E> Flatten<T, E>(Result<Result<T, E>, E> nested)
     {
         return nested.IsOk ? nested.Unwrap() : Result<T, E>.Err(nested.UnwrapErr());
+    }
+
+    /// <summary>Combines three results into a tuple. Returns the first error if any result is a failure.</summary>
+    public static Result<(T1, T2, T3), E> Combine<T1, T2, T3, E>(
+        Result<T1, E> r1, Result<T2, E> r2, Result<T3, E> r3)
+    {
+        if (r1.IsErr) return Result<(T1, T2, T3), E>.Err(r1.UnwrapErr());
+        if (r2.IsErr) return Result<(T1, T2, T3), E>.Err(r2.UnwrapErr());
+        if (r3.IsErr) return Result<(T1, T2, T3), E>.Err(r3.UnwrapErr());
+        return Result<(T1, T2, T3), E>.Ok((r1.Unwrap(), r2.Unwrap(), r3.Unwrap()));
+    }
+
+    /// <summary>Combines four results into a tuple. Returns the first error if any result is a failure.</summary>
+    public static Result<(T1, T2, T3, T4), E> Combine<T1, T2, T3, T4, E>(
+        Result<T1, E> r1, Result<T2, E> r2, Result<T3, E> r3, Result<T4, E> r4)
+    {
+        if (r1.IsErr) return Result<(T1, T2, T3, T4), E>.Err(r1.UnwrapErr());
+        if (r2.IsErr) return Result<(T1, T2, T3, T4), E>.Err(r2.UnwrapErr());
+        if (r3.IsErr) return Result<(T1, T2, T3, T4), E>.Err(r3.UnwrapErr());
+        if (r4.IsErr) return Result<(T1, T2, T3, T4), E>.Err(r4.UnwrapErr());
+        return Result<(T1, T2, T3, T4), E>.Ok((r1.Unwrap(), r2.Unwrap(), r3.Unwrap(), r4.Unwrap()));
+    }
+
+    /// <summary>Combines five results into a tuple. Returns the first error if any result is a failure.</summary>
+    public static Result<(T1, T2, T3, T4, T5), E> Combine<T1, T2, T3, T4, T5, E>(
+        Result<T1, E> r1, Result<T2, E> r2, Result<T3, E> r3, Result<T4, E> r4, Result<T5, E> r5)
+    {
+        if (r1.IsErr) return Result<(T1, T2, T3, T4, T5), E>.Err(r1.UnwrapErr());
+        if (r2.IsErr) return Result<(T1, T2, T3, T4, T5), E>.Err(r2.UnwrapErr());
+        if (r3.IsErr) return Result<(T1, T2, T3, T4, T5), E>.Err(r3.UnwrapErr());
+        if (r4.IsErr) return Result<(T1, T2, T3, T4, T5), E>.Err(r4.UnwrapErr());
+        if (r5.IsErr) return Result<(T1, T2, T3, T4, T5), E>.Err(r5.UnwrapErr());
+        return Result<(T1, T2, T3, T4, T5), E>.Ok((r1.Unwrap(), r2.Unwrap(), r3.Unwrap(), r4.Unwrap(), r5.Unwrap()));
     }
 
     /// <summary>Combines multiple results, collecting ALL errors instead of failing fast.</summary>

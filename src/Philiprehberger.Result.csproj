@@ -7,7 +7,7 @@
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageId>Philiprehberger.Result</PackageId>
-    <Version>0.3.5</Version>
+    <Version>0.4.0</Version>
     <Authors>Philip Rehberger</Authors>
     <Description>Lightweight Result type for .NET — model success and failure without exceptions using pattern matching.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
