@@ -2,12 +2,7 @@
 
 [![CI](https://github.com/philiprehberger/dotnet-result/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/dotnet-result/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/Philiprehberger.Result.svg)](https://www.nuget.org/packages/Philiprehberger.Result)
-[![GitHub release](https://img.shields.io/github/v/release/philiprehberger/dotnet-result)](https://github.com/philiprehberger/dotnet-result/releases)
 [![Last updated](https://img.shields.io/github/last-commit/philiprehberger/dotnet-result)](https://github.com/philiprehberger/dotnet-result/commits/main)
-[![License](https://img.shields.io/github/license/philiprehberger/dotnet-result)](LICENSE)
-[![Bug Reports](https://img.shields.io/github/issues/philiprehberger/dotnet-result/bug)](https://github.com/philiprehberger/dotnet-result/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Feature Requests](https://img.shields.io/github/issues/philiprehberger/dotnet-result/enhancement)](https://github.com/philiprehberger/dotnet-result/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
-[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 Lightweight Result type for .NET — model success and failure without exceptions using pattern matching.
 
@@ -208,10 +203,21 @@ dotnet build src/Philiprehberger.Result.csproj --configuration Release
 
 ## Support
 
-If you find this package useful, consider giving it a star on GitHub — it helps motivate continued maintenance and development.
+If you find this project useful:
 
-[![LinkedIn](https://img.shields.io/badge/Philip%20Rehberger-LinkedIn-0A66C2?logo=linkedin)](https://www.linkedin.com/in/philiprehberger)
-[![More packages](https://img.shields.io/badge/more-open%20source%20packages-blue)](https://philiprehberger.com/open-source-packages)
+⭐ [Star the repo](https://github.com/philiprehberger/dotnet-result)
+
+🐛 [Report issues](https://github.com/philiprehberger/dotnet-result/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+
+💡 [Suggest features](https://github.com/philiprehberger/dotnet-result/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+
+❤️ [Sponsor development](https://github.com/sponsors/philiprehberger)
+
+🌐 [All Open Source Projects](https://philiprehberger.com/open-source-packages)
+
+💻 [GitHub Profile](https://github.com/philiprehberger)
+
+🔗 [LinkedIn Profile](https://www.linkedin.com/in/philiprehberger)
 
 ## License
 
